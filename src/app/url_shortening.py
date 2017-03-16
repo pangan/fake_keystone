@@ -38,10 +38,3 @@ def redirect_short_url(path):
         return redirect(original_url)
 
     return render_template('error_page.html', error_message=1)
-
-
-if __name__ == '__main__':
-    db.app = app
-    db.init_app(app)
-    db.create_all()
-    app.run()

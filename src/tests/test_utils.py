@@ -1,3 +1,9 @@
+"""
+Test Cases for URL Shortening
+
+Author : Amir Mofakhar <pangan@gmail.com>
+"""
+
 from random import randint
 
 import time
@@ -16,6 +22,7 @@ from src.app import utils
 
 
 def _get_string(size):
+    """This function is used for mocking _get_random_string method"""
     return 'test'
 
 class WebAppFunctionsTestCase(TestCase):
