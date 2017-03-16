@@ -46,7 +46,7 @@ def _get_a_word_that_is_not_used_already():
 
 
 def _clean_old_addresses_from_database():
-    ShortURL.query.filter(ShortURL.time_stamp<time.time()-_settings.SHORT_ADDRESS_LIFE_TIME_IN_SECOND).delete()
+    ShortURL.query.filter(ShortURL.time_stamp<time.time() - _settings.SHORT_ADDRESS_LIFE_TIME_IN_SECOND).delete()
 
 
 def _generate_random_string(length):
