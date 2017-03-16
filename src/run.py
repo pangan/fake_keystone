@@ -5,7 +5,7 @@ Author : Amir Mofakhar <pangan@gmail.com>
 """
 from app.models import db
 from app.url_shortening import app
-from src.app import _settings
+from app import _settings
 
 if __name__ == "__main__":
     db.app = app
