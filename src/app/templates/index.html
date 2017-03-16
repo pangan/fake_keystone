@@ -2,6 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
+
     <title>URL Shortening</title>
 </head>
 <body>
@@ -11,9 +12,10 @@
 <div style="text-align: center;">
 <form method="POST" action="get_short_url">
     Enter your long URL to get a short address for it :
-    <input type="url" name="long_url">
+    <input type="url" name="long_url" size="100">
     <input type="submit">
 </form>
+    <br>
 </div>
 {% include 'footer.html' %}
 </body>
