@@ -5,11 +5,12 @@
     <title>URL Shortening</title>
 </head>
 <body>
+{% include 'header.html' %}
 <br>
 <br>
 <div style="text-align: center;">
     You can use this short address instead : <a href="{{short_url}}">{{url_root}}/{{short_url}}</a>
 </div>
-
+{% include 'footer.html' %}
 </body>
 </html>

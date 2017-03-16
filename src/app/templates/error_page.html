@@ -4,13 +4,15 @@
     <meta charset="UTF-8">
     <title>URL Shortening</title></head>
 <body>
-   <font color="red">
+{% include 'header.html' %}
+   <span style="color: red; ">
        {% if error_message==1%}
           There is not any registered short address for this URL!
        {% elif error_message==2%}
           There is an internal error!
        {%endif%}
-   </font>
+   </span>
 <a href ="/">Try Again</a>
+{% include 'footer.html' %}
 </body>
 </html>

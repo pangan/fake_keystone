@@ -3,8 +3,8 @@ Table of database used for URL Shortening
 
 Author : Amir Mofakhar <pangan@gmail.com>
 """
-from src.app import _settings
-from src.app.models import db
+from . import _settings
+from .models import db
 
 
 class ShortURL(db.Model):

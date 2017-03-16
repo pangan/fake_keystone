@@ -5,9 +5,8 @@ Author : Amir Mofakhar <pangan@gmail.com>
 """
 from flask import Flask, render_template, request, redirect
 
-from src.app import _settings
-from src.app.models import db
-from src.app.utils import assign_word_to_url, get_original_url
+from . import _settings
+from .utils import assign_word_to_url, get_original_url
 
 app = Flask(__name__)
 app.config['SQLALCHEMY_DATABASE_URI'] = _settings.DATABASE

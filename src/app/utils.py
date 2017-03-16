@@ -7,9 +7,9 @@ import random
 import string
 import time
 
-from src.app import _settings
-from src.app.database_table import ShortURL
-from src.app.models import db
+from . import _settings
+from .database_table import ShortURL
+from .models import db
 
 
 def get_original_url(short_address):

@@ -10,14 +10,13 @@ import time
 
 from mock import patch
 from flask_testing import TestCase
-from testfixtures import TempDirectory
 from flask import Flask
 
 from src.app import _settings
 from src.app.models import db
 from src.app.database_table import ShortURL
-from src.app.utils import _generate_random_string, _clean_old_addresses_from_database, get_original_url, \
-    _get_a_word_that_is_not_used_already
+from src.app.utils import (_generate_random_string, _clean_old_addresses_from_database,
+                           get_original_url, _get_a_word_that_is_not_used_already)
 from src.app import utils
 
 
