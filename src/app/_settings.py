@@ -5,7 +5,7 @@ Author: Amir Mofakhar <pangan@gmail.com>
 """
 
 SERVER_BASE_ADDRESS = 'http://localhost'
-SERVER_PORT = 8085
+SERVER_PORT = 80
 SHORT_ADDRESS_LIFE_TIME_IN_SECOND = 10000
 DATABASE = 'sqlite:///url_shortening.db'
 SHORT_ADDRESS_LENGTH = 4
