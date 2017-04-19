@@ -3,10 +3,8 @@ Test Cases for URL Shortening
 
 Author : Amir Mofakhar <pangan@gmail.com>
 """
-
-from random import randint
-
 import time
+from random import randint
 
 from mock import patch
 from flask_testing import TestCase
@@ -16,7 +14,7 @@ from src.app import _settings
 from src.app.models import db
 from src.app.database_table import ShortURL
 from src.app.utils import (_generate_random_string, _clean_old_addresses_from_database,
-                           get_original_url, _get_a_word_that_is_not_used_already)
+                           get_original_url, _get_a_word_that_is_not_used_already, _get_hash_string)
 from src.app import utils
 
 
@@ -89,3 +87,12 @@ class WebAppFunctionsTestCase(TestCase):
         db.session.commit()
         with patch.object(utils, '_generate_random_string', _get_string):
             self.assertIsNone( _get_a_word_that_is_not_used_already())
+
+    def test_get_hash_string(self):
+        """Test _get_hash_string returns string with correct size"""
+        hash_string_size = randint(5,50)
+        test_string = 'test'
+        hash_string = _get_hash_string(test_string, hash_string_size)
+
+        self.assertIsInstance(hash_string, str)
+        self.assertEqual(len(hash_string), hash_string_size)

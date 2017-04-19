@@ -6,6 +6,7 @@ Author : Amir Mofakhar <pangan@gmail.com>
 import random
 import string
 import time
+import hashlib
 
 from . import _settings
 from .database_table import ShortURL
@@ -51,3 +52,7 @@ def _clean_old_addresses_from_database():
 
 def _generate_random_string(length):
     return ''.join(random.choice(string.lowercase) for _ in range(length))
+
+
+def _get_hash_string(input_string, size):
+    return hashlib.md5(input_string).digest().encode('base64')[:size]
