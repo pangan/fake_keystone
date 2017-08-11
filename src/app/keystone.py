@@ -5,7 +5,7 @@ Author : Amir Mofakhar <pangan@gmail.com>
 """
 from flask import Flask, request
 
-from . import _settings
+
 from v3 import v3
 from v2 import v2
 

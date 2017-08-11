@@ -31,8 +31,8 @@ class WebAppFunctionsTestCase(TestCase):
         #db.drop_all()
         pass
 
-    def test_get_token(self):
-        """Test function return none if short address is not in database"""
+    def test_get_token_response_is_correct(self):
+        """Test response is correct"""
         resp = self.client.get('/v3/auth/tokens')
 
         self.assert_status(resp, 201)
