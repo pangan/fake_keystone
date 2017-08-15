@@ -6,10 +6,13 @@ Author : Amir Mofakhar <pangan@gmail.com>
 from src.app import keystone
 
 from flask_testing import TestCase
-from flask import Flask
+from src.app.v3 import _get_timestamp
+from mock import Mock, patch
+from datetime import datetime
+import time
 
-from src.app import _settings
-
+mock_time = Mock()
+mock_time.return_value = time.mktime(datetime(2022, 2, 14, 10, 12).timetuple())
 
 class WebAppFunctionsTestCase(TestCase):
     """
@@ -17,7 +20,7 @@ class WebAppFunctionsTestCase(TestCase):
     """
 
     def create_app(self):
-        #app2 = Flask(__name__)
+
         test_app = keystone.app
         test_app.config['TESTING'] =  True
         return test_app
@@ -38,3 +41,9 @@ class WebAppFunctionsTestCase(TestCase):
         self.assert_status(resp, 201)
         self.assertEquals(resp.content_type, 'application/json')
 
+
+    def test_get_time_stamp(self):
+        with patch('time.time') as mock_time:
+            a = datetime.now()
+            b = time.time()
+            self.assertEqual(_get_timestamp(), '2016-02-14T10:11:12.000000Z')

@@ -1,5 +1,6 @@
-from flask import Blueprint, abort, jsonify, Response
+from flask import Blueprint, abort, jsonify, Response, request
 from _settings import TOKEN
+from datetime import datetime, timedelta
 import json
 
 v3 = Blueprint('v3',  __name__)
@@ -10,21 +11,20 @@ def hello_token():
     return 'Hello'
 
 
-@v3.route('/auth/tokens')
+@v3.route('/auth/tokens', methods=['POST'])
 def get_token():
-    body = {
+    password_body = {
         "token": {
             "is_domain": False,
             "methods": ["password"],
-            "roles": [{"id": "0a10a3d4c5234014a059e9161941fe36", "name": "monasca-agent"},
-                      {"id": "74f1cd55623344bea3aaa924930b94f3", "name": "monasca-user"}],
-            "expires_at": "2017-08-11T09:42:22.000000Z",
+            "roles": [{"id": "123456", "name": "monasca-agent"}],
+            "expires_at": _get_timestamp(feature_seconds=30),
             "project": {
                 "domain": {
                     "id": "default",
                     "name": "Default"
                 },
-                "id": "3d73e17ed2114828900f548098e2c157",
+                "id": "123456",
                 "name": "mini-mon"
             },
             "catalog": [
@@ -35,7 +35,7 @@ def get_token():
                             "interface": "public",
                             "region": "RegionOne",
                             "region_id": "RegionOne",
-                            "id": "3536eb9cc27e477994281c9c6910cde5"
+                            "id": "123456"
                         }
                     ],
                     "type": "compute_legacy",
@@ -67,15 +67,203 @@ def get_token():
                 "name": "monasca-agent"
             },
             "audit_ids": ["F7NiXuosQrmyjlA0-4-s4A"],
-            "issued_at": "2017-08-11T08:42:22.000000Z"
+            "issued_at": _get_timestamp()
         }
+    }
+
+    token_body = {
+        "token": {
+            "methods": [
+                "token"
+            ],
+            "expires_at": _get_timestamp(feature_seconds=30),
+            "extras": {},
+            "user": {
+                "domain": {
+                    "id": "default",
+                    "name": "Default"
+                },
+                "id": "123456",
+                "name": "admin",
+                "password_expires_at": None
+            },
+            "audit_ids": [
+                "123456"
+            ],
+            "issued_at": _get_timestamp()
+        }
+    }
+    token_body = {
+        "token": {
+            "is_domain": False,
+            "methods": ["token", "password"],
+            "roles": [
+                {
+                    "id": "123456",
+                    "name": "monasca-agent"
+                },
+                {
+                    "id": "123456",
+                    "name": "monasca-user"
+                }
+            ],
+            "expires_at": _get_timestamp(feature_seconds=30),
+            "project": {
+                "domain": {
+                    "id": "default",
+                    "name": "Default"
+                },
+                "id": "123456",
+                "name": "mini-mon"
+            },
+            "catalog": [
+                {
+                    "endpoints": [
+                        {
+                            "url": "http://10.5.0.112:8774/v2/3d73e17ed2114828900f548098e2c157",
+                            "interface": "public",
+                            "region": "RegionOne",
+                            "region_id": "RegionOne",
+                            "id": "123456"
+                        }
+                    ],
+                    "type": "compute_legacy",
+                    "id": "123456",
+                    "name": "nova_legacy"
+                },
+                {
+                    "endpoints": [
+                        {
+                            "url": "http://10.5.0.112:8776/v3/3d73e17ed2114828900f548098e2c157",
+                            "interface": "public",
+                            "region": "RegionOne",
+                            "region_id": "RegionOne",
+                            "id": "123456"
+                        }
+                    ],
+                    "type": "volumev3",
+                    "id": "123456",
+                    "name": "cinderv3"
+                },
+                {
+                    "endpoints": [
+                        {
+                            "url": "http://10.5.0.112:9292",
+                            "interface": "public",
+                            "region": "RegionOne",
+                            "region_id": "RegionOne",
+                            "id": "123456"
+                        }
+                    ],
+                    "type": "image",
+                    "id": "123456",
+                    "name": "glance"
+                },
+                {
+                    "endpoints": [
+                        {
+                            "url": "http://10.5.0.112:8776/v1/3d73e17ed2114828900f548098e2c157",
+                            "interface": "public",
+                            "region": "RegionOne",
+                            "region_id": "RegionOne",
+                            "id": "123456"
+                        }
+                    ],
+                    "type": "volume",
+                    "id": "123456",
+                    "name": "cinder"
+                },
+            ],
+            "user": {
+                "password_expires_at": None,
+                "domain": {
+                    "id": "default",
+                    "name": "Default"
+                },
+                "id": "123456",
+                "name": "monasca-agent"
+            },
+            "audit_ids": [
+                "PrNbZZGMS8yKFW5X3AQtKg",
+                "nuHKzNyVQJW3y5KmzkuyMA"
+            ],
+            "issued_at": _get_timestamp()
+        }
+    }
+
+
+
+    request_body = json.loads(request.data)
+
+    print ('AUTH::header-> {0}'.format(request.headers))
+    print ('AUTH::body-> {0}'.format(request_body))
+
+    if 'password' in request_body['auth']['identity']['methods']:
+        response = Response.response = jsonify(password_body)
+    if 'token' in request_body['auth']['identity']['methods']:
+        response = Response.response = jsonify(token_body)
+        print token_body
+    response.content_type = 'application/json'
+    response.headers['X-Subject-Token'] = TOKEN
+
+    return response, 201
+# '{"auth":{"identity":{"methods":["token"],"token":{"id":"123456"}},"scope":{"project":{"name":"mini-mon2","domain":{"name":"Default"}}}}}'
+
+@v3.route('/auth/projects', methods=['GET'])
+def get_projects():
+    body = {
+        "projects": [
+            {
+                "domain_id": "12346",
+                "enabled": True,
+                "id": "1234",
+                "links": {
+                    "self": "http://10.5.0.1:5000/identity/v3/projects/1234"
+                },
+                "name": "Default"
+            }
+        ],
+        "links": {
+            "self": "http://10.5.0.1:5000/identity/v3/auth/projects",
+            "previous": None,
+            "next": None
+
+        }
+    }
+
+    body = {
+        "links": {
+            "self": "http://10.5.0.1/identity/v3/auth/projects",
+            "previous": None,
+            "next": None
+        },
+        "projects": [
+            {
+                "is_domain": False,
+                "description": "",
+                "links": {
+                    "self": "http://10.5.0.1/identity/v3/projects/3d73e17ed2114828900f548098e2c157"
+                },
+                "enabled": True,
+                "id": "3d73e17ed2114828900f548098e2c157",
+                "parent_id": "default",
+                "domain_id": "default",
+                "name": "mini-mon"
+            }
+        ]
     }
 
     response = Response.response = jsonify(body)
 
+
+    #request_body = json.loads(request.data)
+
+    print ('PROJ::header-> {0}'.format(request.headers))
+    print ('PROJ::body-> {0}'.format(request.date))
+
     response.content_type = 'application/json'
-    response.headers['X-Subject-Token'] = TOKEN
-    return response, 201
+    return response, 200
+
 
 
 @v3.route('/error')
@@ -86,5 +274,8 @@ def return_error():
 @v3.route('/<path:path>')
 def other_path(path):
 
-    return
+    return path
 
+def _get_timestamp(feature_days=0, feature_hours=0, feature_seconds=0):
+    time_stamp = datetime.now() + timedelta(days=feature_days, hours=feature_hours, seconds=feature_seconds)
+    return time_stamp.strftime('%Y-%m-%dT%H:%M:%S.000000Z')
